@@ -7,9 +7,9 @@ categories:
   - personal
 tags: []
 description: ''
-featured: ''
-featuredalt: ''
-featuredpath: ''
+featured: 'highSchool.jpg'
+featuredalt: 'High School'
+featuredpath: 'img/2018/12'
 linktitle: ''
 ---
 
