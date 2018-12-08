@@ -1,0 +1,46 @@
+---
+title: Test Post
+author: Alan Carlson
+date: '2018-11-18'
+slug: test-post
+categories:
+  - R
+tags: []
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+---
+
+```{r setup}
+
+knitr::opts_chunk$set(
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 10,
+  cache = FALSE,
+  out.width = '100%'
+)
+
+library(dplyr)
+library(ggplot2)
+
+```
+
+```{r data}
+
+data = data.frame(
+  x = rnorm(1000),
+  y = rnorm(1000)
+)
+
+```
+
+```{r}
+
+ggplot(data,aes(x,y)) + 
+  geom_point(size=1)
+
+```

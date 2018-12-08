@@ -1,0 +1,57 @@
+﻿semester,subject,class,label,size,color
+One,Gen Ed,Engineering Graphics,One-Gen Ed-Engineering Graphics,2,#8DD3C7
+One,Gen Ed,General Chemistry I,One-Gen Ed-General Chemistry I,4,#8DD3C7
+One,Gen Ed,General Chemistry I Lab,One-Gen Ed-General Chemistry I Lab,1,#8DD3C7
+One,Gen Ed,Calculus I,One-Gen Ed-Calculus I,4,#8DD3C7
+One,Gen Ed,Intro to Nuclear Eng,One-Gen Ed-Intro to Nuclear Eng,1,#8DD3C7
+One,Gen Ed,Intro to Philosophy,One-Gen Ed-Intro to Philosophy,3,#8DD3C7
+Two,Gen Ed,US History and Culture,Two-Gen Ed-US History and Culture,3,#8DD3C7
+Two,Management,Business Statistics,Two-Management-Business Statistics,3,#80B1D3
+Two,Gen Ed,American Music,Two-Gen Ed-American Music,3,#8DD3C7
+Two,Gen Ed,Intro to American Govt,Two-Gen Ed-Intro to American Govt,3,#8DD3C7
+Two,Gen Ed,"Comp, Reading, Writing","Two-Gen Ed-Comp, Reading, Writing",6,#8DD3C7
+Three,Accounting,Principles of Accounting I,Three-Accounting-Principles of Accounting I,3,#BEBADA
+Three,Business,The World of Business,Three-Business-The World of Business,3,#FDB462
+Three,Business,Principles of Microeconomics,Three-Business-Principles of Microeconomics,3,#FDB462
+Three,Management,Adv Business Statistics,Three-Management-Adv Business Statistics,3,#80B1D3
+Three,Management,Legal Environment of Orgs,Three-Management-Legal Environment of Orgs,3,#80B1D3
+Three,Business,Professional Development I,Three-Business-Professional Development I,1,#80B1D3
+Four,Accounting,Principles of Accounting II,Four-Accounting-Principles of Accounting II,3,#BEBADA
+Four,Gen Ed,Principles of Speech,Four-Gen Ed-Principles of Speech,3,#8DD3C7
+Four,Business,Principles of Macroeconomics,Four-Business-Principles of Macroeconomics,3,#FDB462
+Four,Info Systems,Intro to Informatics/Analytics,Four-Info Systems-Intro to Informatics/Analytics,3,#FB8072
+Four,Business,Basic Marketing Management,Four-Business-Basic Marketing Management,3,#FDB462
+Five,Finance,Corporate Financial Management,Five-Finance-Corporate Financial Management,3,#FFFFB3
+Five,Business,Business Writing,Five-Business-Business Writing,3,#FDB462
+Five,Business,Business/Professional Speaking,Five-Business-Business/Professional Speaking,3,#FDB462
+Five,Management,Individual and Org Behavior,Five-Management-Individual and Org Behavior,3,#80B1D3
+Five,Management,Operations/Production Mangement,Five-Management-Operations/Production Mangement,3,#80B1D3
+Five,Business,Professional Development II,Five-Business-Professional Development II,1,#FDB462
+Six,Gen Ed,World Regional Geography,Six-Gen Ed-World Regional Geography,3,#8DD3C7
+Six,Management,Organization Behavior,Six-Management-Organization Behavior,3,#80B1D3
+Six,Finance,Adv Corp Financial Mgt,Six-Finance-Adv Corp Financial Mgt,3,#FFFFB3
+Six,Finance,Investments,Six-Finance-Investments,3,#FFFFB3
+Six,Management,Productivity and Quality,Six-Management-Productivity and Quality,3,#80B1D3
+Six,Finance,CFA Challenge,Six-Finance-CFA Challenge,2,#FFFFB3
+Seven,Management,Project Management,Seven-Management-Project Management,3,#80B1D3
+Seven,Management,Human Resource Management,Seven-Management-Human Resource Management,3,#80B1D3
+Seven,Management,Labor and Employment Law,Seven-Management-Labor and Employment Law,3,#80B1D3
+Seven,Finance,Real Estate Finance,Seven-Finance-Real Estate Finance,3,#FFFFB3
+Seven,Finance,Student Managed Investment Fund I,Seven-Finance-Student Managed Investment Fund I,3,#FFFFB3
+Eight,Accounting,Management and Cost Accounting,Eight-Accounting-Management and Cost Accounting,3,#BEBADA
+Eight,Accounting,Accounting Information Systems,Eight-Accounting-Accounting Information Systems,3,#BEBADA
+Eight,Management,Policy and Management,Eight-Management-Policy and Management,3,#80B1D3
+Eight,Business,Professional Development III,Eight-Business-Professional Development III,1,#FDB462
+Eight,Gen Ed,Intro to Geology,Eight-Gen Ed-Intro to Geology,3,#8DD3C7
+Eight,Info Systems,Data Visualization,Eight-Info Systems-Data Visualization,3,#FB8072
+Nine,Accounting,Financial Statements,Nine-Accounting-Financial Statements,3,#BEBADA
+Nine,Finance,Stats for Finance,Nine-Finance-Stats for Finance,3,#FFFFB3
+Nine,Finance,Adv Corp Finance,Nine-Finance-Adv Corp Finance,3,#FFFFB3
+Nine,Info Systems,Data Visualization with R,Nine-Info Systems-Data Visualization with R,1.5,#FB8072
+Nine,Info Systems,Database Theory & Design,Nine-Info Systems-Database Theory & Design,3,#FB8072
+Nine,Info Systems,Data Mining,Nine-Info Systems-Data Mining,3,#FB8072
+Ten,Finance,Investments/Portfolio Mgt,Ten-Finance-Investments/Portfolio Mgt,3,#FFFFB3
+Ten,Finance,Financial Cases,Ten-Finance-Financial Cases,3,#FFFFB3
+Ten,Finance,Financial Modeling,Ten-Finance-Financial Modeling,3,#FFFFB3
+Ten,Finance,Real Estate Finance,Ten-Finance-Real Estate Finance,3,#FFFFB3
+Ten,Finance,Real Estate Construction,Ten-Finance-Real Estate Construction,1.5,#FFFFB3

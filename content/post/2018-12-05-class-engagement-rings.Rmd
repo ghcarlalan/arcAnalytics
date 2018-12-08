@@ -1,0 +1,815 @@
+---
+title: Class & Engagement Rings
+author: Alan Carlson
+date: '2018-12-05'
+slug: class-engagement-rings
+categories:
+  - personal
+tags: []
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(lubridate)
+library(reshape2)
+library(manipulateWidget)
+library(highcharter)
+library(blogdown)
+library(htmltools)
+library(widgetframe)
+library(gridExtra)
+library(waffle)
+
+knitr::opts_chunk$set(
+  warning = FALSE,
+  echo = FALSE,
+  message = FALSE,
+  cache = FALSE,
+  tidy = TRUE,
+  out.width = '100%'
+)
+
+theme_set(theme_bw() + theme(text = element_text(size=12)))
+
+knit_hooks$set(htmlcap = function(before, options, envir) {
+  if(!before) {
+    paste('<p style="text-align:center "><i>',options$htmlcap,"</i></p>",sep="")
+    }
+  }
+)
+
+arcGreen <- '#9FC131'
+arcBlue <- '#1C8867'
+arcYellow <- '#F2D055'
+arcDark <- '#2A3A35'
+arcOrange <- '#EF431B'
+arcGrey <- '#CCCCCC'
+arcPink <- '#DC584E'
+
+#data load
+raw_hs <- read.csv(
+  "/arcAnalytics/content/post/datasets/hhs.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE,
+  fileEncoding="UTF-8-BOM"
+)
+```
+
+It’s been 5 years since I graduated high school. There were about 1,200 students in total when I left, and I graduated with 285 other young adults eager to do something with their lives. If Facebook is any indicator though, that <i>something</i> was to get married and/or have kids as soon as possible. It’s eastern Idaho; what can you expect?
+
+```{r,echo=FALSE,out.width='50%',htmlcap="So many Mormons is what you can expect",fig.align='center'}
+knitr::include_graphics("/post/2018-12-05-class-engagement-rings_files/mormon.jpg")
+```
+
+This can slightly (read: really) bum you out if you think you’re in the minority of not being one of those people who have found their life partner or have had their mini me before 23. To combat this feeling, <b>[this tweet](https://twitter.com/KeelyeShaye/status/1001511141711974400)</b> was shared in a group chat with my 3 best friends from high school. 
+
+Naturally, we all assumed that there would be plenty of alcohol to be had, but I wanted to actually figure out how many shots my classmates would be proverbially giving me. I knew the amount of drinks was somewhere between “Sorority Celebration” and “The collective alcoholism of every racist uncle” but that’s not exactly a narrow band. 
+
+```{r,echo=FALSE,out.width='50%',htmlcap="Fun Fact: Sororities are the biggest consumer of limes (citation needed)",fig.align='center'}
+knitr::include_graphics("/post/2018-12-05-class-engagement-rings_files/sorority.jpg")
+```
+
+The steps were simple:
+
+1.	Facebook stalk every senior of HHS Class of 2013 (285 graduates, excluding myself)
+2.	Check to see if they are engaged/married
+    a.	Do they have an engagement/wedding ring in their profile photo? (Easy)
+    b.	Do they have a combined Facebook account? (Sad)
+    c.	Has the woman’s last name changed? (I know it's 2018, but it's also eastern Idaho)
+3.	Check to see if they have a kid
+    a.	Do they have a kid in their profile picture? (Again, easy)
+    b.	Do they have a gender reveal video? (That’s not for a dog)
+    c.	Is their a photo of a chalkboard with a phrase comparing an inanimate object’s size to the size of their growing baby? (Just.. why?)
+
+```{r,echo=FALSE,out.width='50%',htmlcap="At 30 weeks, it's as big as a toaster! And just as impossible to clean!",fig.align='center'}
+knitr::include_graphics("/post/2018-12-05-class-engagement-rings_files/toaster.jpg")
+```
+
+I did not count the number of children (some already have 3 if you’re wondering), but rather just the presence of children/expecting children to simplify tabulation. I also combined engagements and marriages. For those I could not find data on via Facebook, I simply interpolated they were neither married nor parents, because what millennial wouldn’t post that over social media with reckless abandon? With the details out of the way, let’s get to the data!
+
+```{r overall}
+
+expecting <- raw_hs %>% 
+  group_by(
+    expecting
+  ) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  mutate(
+    pct = values/sum(values),
+    labels = rev(c("Yes","No")),
+    colors = rev(c(arcGreen,arcGrey))
+  ) %>% 
+  arrange(
+    -expecting
+  )
+
+engaged <- raw_hs %>% 
+  group_by(
+    engaged
+  ) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  mutate(
+    pct = values/sum(values),
+    labels = rev(c("Yes","No")),
+    colors = rev(c(arcGreen,arcGrey))
+  ) %>% 
+  arrange(
+    -engaged
+  )
+
+widgetframe::frameWidget(
+  combineWidgets(
+    highchart() %>% 
+      hc_chart(
+        type = "pie",
+        data = engaged
+      ) %>% 
+      hc_add_series_labels_values(
+        values = engaged$values,
+        labels = engaged$labels,
+        color = engaged$colors,
+        innerSize = '65%' #creates donut portion
+      ) %>% 
+      hc_plotOptions(
+        pie = list(dataLabels = list(enabled = FALSE)) #remove text labels
+      ) %>% 
+      hc_tooltip(
+        borderWidth=0,
+        backgroundColor = 'none',
+        shadow = FALSE,
+        style = list(
+          fontSize='12px'
+        ),
+        pointFormat = '{point.y} Classmates<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.percentage:.1f}%</span>',
+        positioner = JS(
+          "function(labelWidth,labelHeight){
+            return {
+              x: this.chart.series[0].center[0] - (this.label.width / 2) + 8,
+              y: this.chart.series[0].center[1] - (this.label.height / 2) + 8
+            };
+          }"
+        )
+      ) %>% 
+      hc_title(
+        text = "Engaged or Married",
+        align = "center"
+      ),
+    highchart() %>% 
+      hc_chart(
+        type = "pie",
+        data = expecting
+      ) %>% 
+      hc_add_series_labels_values(
+        values = expecting$values,
+        labels = expecting$labels,
+        color = expecting$colors,
+        innerSize = '65%' #creates donut portion
+      ) %>% 
+      hc_plotOptions(
+        pie = list(dataLabels = list(enabled = FALSE)) #remove text labels
+      ) %>% 
+      hc_tooltip(
+        borderWidth=0,
+        backgroundColor = 'none',
+        shadow = FALSE,
+        style = list(
+          fontSize='12px'
+        ),
+        pointFormat = '{point.y} Classmates<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.percentage:.1f}%</span>',
+        positioner = JS(
+          "function(labelWidth,labelHeight){
+            return {
+              x: this.chart.series[0].center[0] - (this.label.width / 2) + 8,
+              y: this.chart.series[0].center[1] - (this.label.height / 2) + 8
+            };
+          }"
+        )
+      ) %>%
+      hc_title(
+        text = "Expecting and/or Have Child(ren)",
+        align = "center"
+      ),
+    ncol = 2
+  )
+)
+
+```
+
+I found that almost 40% of my class has a ring on their finger, while just over 10% are now familiar with the diaper market. Which I suppose makes sense given current trends on these subjects; it takes longer for marriage to come to fruition, and even longer for that marriage (or a relationship not involving marriage) to bear.. fruit as it were.
+
+```{r venn}
+
+venn <- raw_hs %>% 
+  mutate(
+    venn = paste0(engaged,expecting)
+  ) %>% 
+  group_by(
+    venn
+  ) %>% 
+  summarise(
+    count = n()
+  )
+
+venn_hc <- data.frame(
+  x = c(4.25,5.75),
+  y = c(50,50),
+  z = c(venn$count[3] + venn$count[4],venn$count[2]+venn$count[4]),
+  name = c('Engaged and/or Married','Expecting and/or Have Child(ren)'),
+  color = c(arcYellow,arcGreen)
+)
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_add_series(
+      type = 'bubble',
+      name = "Totals (out of 286 Classmates)",
+      color = hex_to_rgba(arcBlue,.5),
+      data = jsonlite::toJSON(venn_hc),
+      dataLabels = list(
+        enabled=TRUE,
+        style = list(
+          fontSize = '22px'
+        )
+      ),
+          showInLegend = FALSE
+    ) %>%
+    hc_yAxis(
+      min=0,
+      max=100,
+      lineWidth = 0,
+      majorGridLineWidth = 0,
+      minorGridLineWidth = 0,
+      lineColor = 'transparent',
+      gridLineColor = 'transparent',
+      minorTickLength = 0,
+      tickLength = 0,
+      labels = list(
+        enabled = FALSE
+      )
+    ) %>% 
+    hc_xAxis(
+      min=0,
+      max=10,
+      lineWidth = 0,
+      majorGridLineWidth = 0,
+      minorGridLineWidth = 0,
+      lineColor = 'transparent',
+      gridLineColor = 'transparent',
+      minorTickLength = 0,
+      tickLength = 0,
+      labels = list(
+        enabled = FALSE
+      )
+    ) %>% 
+    hc_tooltip(
+      pointFormat = '<b>{point.name}</b><br>{point.z} Classmates (29 in Both)'
+    ) %>% 
+    hc_plotOptions(
+      bubble = list(
+        minSize = 200,
+        maxSize = 300
+      )
+    ) %>% 
+    hc_title(
+      text = "Overlap of Classmates' Stage in Life",
+      align = 'left'
+    )
+)
+
+```
+
+What is interesting is that 4 of these married couples are in this same class. That’s right! Not only are they high school sweethearts, they are high school graduating class sweethearts!
+
+We can do this exact same analysis by gender as well, which could be interesting since we had a virtual 50/50 split.  
+
+```{r gender}
+
+gender <- raw_hs %>% 
+  group_by(
+    Gender
+  ) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  mutate(
+    pct = values/sum(values),
+    labels = rev(c("Female","Male")),
+    colors = rev(c(arcGreen,arcGrey))
+  ) %>% 
+  arrange(
+    Gender
+  )
+
+maleEngaged <- raw_hs %>% 
+  filter(
+    Gender == 0
+  ) %>% 
+  group_by(
+    engaged
+  ) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  mutate(
+    pct = values/sum(values),
+    labels = rev(c("Yes","No")),
+    colors = rev(c(arcBlue,arcGrey))
+  ) %>% 
+  arrange(
+    -engaged
+  )
+
+maleExpecting <- raw_hs %>% 
+  filter(
+    Gender == 0
+  ) %>% 
+  group_by(
+    expecting
+  ) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  mutate(
+    pct = values/sum(values),
+    labels = rev(c("Yes","No")),
+    colors = rev(c(arcBlue,arcGrey))
+  ) %>% 
+  arrange(
+    -expecting
+  )
+
+femaleEngaged <- raw_hs %>% 
+  filter(
+    Gender != 0
+  ) %>% 
+  group_by(
+    engaged
+  ) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  mutate(
+    pct = values/sum(values),
+    labels = rev(c("Yes","No")),
+    colors = rev(c(arcPink,arcGrey))
+  ) %>% 
+  arrange(
+    -engaged
+  )
+
+femaleExpecting <- raw_hs %>% 
+  filter(
+    Gender != 0
+  ) %>% 
+  group_by(
+    expecting
+  ) %>% 
+  summarise(
+    values = n()
+  ) %>% 
+  mutate(
+    pct = values/sum(values),
+    labels = rev(c("Yes","No")),
+    colors = rev(c(arcPink,arcGrey))
+  ) %>% 
+  arrange(
+    -expecting
+  )
+
+maleVenn <- raw_hs %>% 
+  filter(
+    Gender == 0
+  ) %>% 
+  mutate(
+    venn = paste0(engaged,expecting)
+  ) %>% 
+  group_by(
+    venn
+  ) %>% 
+  summarise(
+    count = n()
+  )
+
+male_venn_hc <- data.frame(
+  x = c(4.25,5.75),
+  y = c(50,50),
+  z = c(maleVenn$count[3] + maleVenn$count[4],maleVenn$count[2]+maleVenn$count[4]),
+  name = c('Engaged and/or Married','Expecting and/or Have Child(ren)'),
+  color = c(arcYellow,arcBlue)
+)
+
+femaleVenn <- raw_hs %>% 
+  filter(
+    Gender != 0
+  ) %>% 
+  mutate(
+    venn = paste0(engaged,expecting)
+  ) %>% 
+  group_by(
+    venn
+  ) %>% 
+  summarise(
+    count = n()
+  )
+
+female_venn_hc <- data.frame(
+  x = c(4.25,5.75),
+  y = c(50,50),
+  z = c(femaleVenn$count[3] + femaleVenn$count[4],femaleVenn$count[2]+femaleVenn$count[4]),
+  name = c('Engaged and/or Married','Expecting and/or Have Child(ren)'),
+  color = c(arcYellow,arcPink)
+)
+
+frameWidget(
+  combineWidgets(
+    combineWidgets(
+      highchart() %>% 
+            hc_chart(
+              type = "pie",
+              data = gender
+            ) %>% 
+            hc_add_series_labels_values(
+              values = gender$values,
+              labels = gender$labels,
+              color = c(arcBlue,arcGrey),
+              innerSize = '65%' #creates donut portion
+            ) %>% 
+            hc_plotOptions(
+              pie = list(dataLabels = list(enabled = FALSE)) #remove text labels
+            ) %>% 
+            hc_tooltip(
+              borderWidth=0,
+              backgroundColor = 'none',
+              shadow = FALSE,
+              style = list(
+          fontSize='12px'
+        ),
+        pointFormat = '{point.y} Classmates<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.percentage:.1f}%</span>',
+              positioner = JS(
+                "function(labelWidth,labelHeight){
+                  return {
+                    x: this.chart.series[0].center[0] - (this.label.width / 2) + 8,
+                    y: this.chart.series[0].center[1] - (this.label.height / 2) + 8
+                  };
+                }"
+              )
+            ) %>% 
+            hc_title(
+              text = "Male Classmates",
+              align = "center"
+            ),
+      highchart() %>% 
+            hc_chart(
+              type = "pie",
+              data = gender
+            ) %>% 
+            hc_add_series_labels_values(
+              values = gender$values,
+              labels = gender$labels,
+              color = c(arcGrey,arcPink),
+              innerSize = '65%' #creates donut portion
+            ) %>% 
+            hc_plotOptions(
+              pie = list(dataLabels = list(enabled = FALSE)) #remove text labels
+            ) %>% 
+            hc_tooltip(
+              borderWidth=0,
+              backgroundColor = 'none',
+              shadow = FALSE,
+              style = list(
+          fontSize='12px'
+        ),
+        pointFormat = '{point.y} Classmates<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.percentage:.1f}%</span>',
+              positioner = JS(
+                "function(labelWidth,labelHeight){
+                  return {
+                    x: this.chart.series[0].center[0] - (this.label.width / 2) + 8,
+                    y: this.chart.series[0].center[1] - (this.label.height / 2) + 8
+                  };
+                }"
+              )
+            ) %>%
+            hc_title(
+              text = "Female Classmates",
+              align = "center"
+            ),
+      ncol = 2
+    ),
+    combineWidgets(
+      highchart() %>% 
+            hc_chart(
+              type = "pie",
+              data = maleEngaged
+            ) %>% 
+            hc_add_series_labels_values(
+              values = maleEngaged$values,
+              labels = maleEngaged$labels,
+              color = maleEngaged$colors,
+              innerSize = '65%' #creates donut portion
+            ) %>% 
+            hc_plotOptions(
+              pie = list(dataLabels = list(enabled = FALSE)) #remove text labels
+            ) %>% 
+            hc_tooltip(
+              borderWidth=0,
+              backgroundColor = 'none',
+              shadow = FALSE,
+             style = list(
+          fontSize='12px'
+        ),
+        pointFormat = '{point.y} Classmates<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.percentage:.1f}%</span>',
+              positioner = JS(
+                "function(labelWidth,labelHeight){
+                  return {
+                    x: this.chart.series[0].center[0] - (this.label.width / 2) + 8,
+                    y: this.chart.series[0].center[1] - (this.label.height / 2) + 60
+                  };
+                }"
+              )
+            ) %>%
+            hc_title(
+              text = "Engaged or Married",
+              align = "center",
+              style = list(
+                fontSize = '14px'
+              )
+            ),
+      highchart() %>% 
+            hc_chart(
+              type = "pie",
+              data = maleExpecting
+            ) %>% 
+            hc_add_series_labels_values(
+              values = maleExpecting$values,
+              labels = maleExpecting$labels,
+              color = maleExpecting$colors,
+              innerSize = '65%' #creates donut portion
+            ) %>% 
+            hc_plotOptions(
+              pie = list(dataLabels = list(enabled = FALSE)) #remove text labels
+            ) %>% 
+            hc_tooltip(
+              borderWidth=0,
+              backgroundColor = 'none',
+              shadow = FALSE,
+              style = list(
+          fontSize='12px'
+        ),
+        pointFormat = '{point.y} Classmates<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.percentage:.1f}%</span>',
+              positioner = JS(
+                "function(labelWidth,labelHeight){
+                  return {
+                    x: this.chart.series[0].center[0] - (this.label.width / 2) + 8,
+                    y: this.chart.series[0].center[1] - (this.label.height / 2) + 60
+                  };
+                }"
+              )
+            ) %>%
+            hc_title(
+              text = "Expecting and/or Have Child(ren)",
+              align = "center",
+              style = list(
+                fontSize = '14px'
+              )
+            ),
+      highchart() %>% 
+            hc_chart(
+              type = "pie",
+              data = femaleEngaged
+            ) %>% 
+            hc_add_series_labels_values(
+              values = femaleEngaged$values,
+              labels = femaleEngaged$labels,
+              color = femaleEngaged$colors,
+              innerSize = '65%' #creates donut portion
+            ) %>% 
+            hc_plotOptions(
+              pie = list(dataLabels = list(enabled = FALSE)) #remove text labels
+            ) %>% 
+            hc_tooltip(
+              borderWidth=0,
+              backgroundColor = 'none',
+              shadow = FALSE,
+              style = list(
+          fontSize='12px'
+        ),
+        pointFormat = '{point.y} Classmates<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.percentage:.1f}%</span>',
+              positioner = JS(
+                "function(labelWidth,labelHeight){
+                  return {
+                    x: this.chart.series[0].center[0] - (this.label.width / 2) + 8,
+                    y: this.chart.series[0].center[1] - (this.label.height / 2) + 60
+                  };
+                }"
+              )
+            ) %>%
+            hc_title(
+              text = "Engaged or Married",
+              align = "center",
+              style = list(
+                fontSize = '14px'
+              )
+            ),
+      highchart() %>% 
+            hc_chart(
+              type = "pie",
+              data = femaleExpecting
+            ) %>% 
+            hc_add_series_labels_values(
+              values = femaleExpecting$values,
+              labels = femaleExpecting$labels,
+              color = femaleExpecting$colors,
+              innerSize = '65%' #creates donut portion
+            ) %>% 
+            hc_plotOptions(
+              pie = list(dataLabels = list(enabled = FALSE)) #remove text labels
+            ) %>% 
+            hc_tooltip(
+              borderWidth=0,
+              backgroundColor = 'none',
+              shadow = FALSE,
+              style = list(
+          fontSize='13px'
+        ),
+        pointFormat = '{point.y} Classmates<br><span style="font-size:2em; color: {point.color}; font-weight: bold">{point.percentage:.1f}%</span>',
+              positioner = JS(
+                "function(labelWidth,labelHeight){
+                  return {
+                    x: this.chart.series[0].center[0] - (this.label.width / 2) + 8,
+                    y: this.chart.series[0].center[1] - (this.label.height / 2) + 60
+                  };
+                }"
+              )
+            ) %>%
+            hc_title(
+              text = "Expecting and/or Have Child(ren)",
+              align = "center",
+              style = list(
+                fontSize = '14px'
+              )
+            ),
+      ncol = 4
+    ),
+    combineWidgets(
+      highchart() %>%
+        hc_add_series(
+          type = 'bubble',
+          name = "Totals (out of 149 Classmates)",
+          # color = hex_to_rgba(arcBlue,.5),
+          data = jsonlite::toJSON(male_venn_hc),
+          dataLabels = list(
+            enabled=TRUE,
+            style = list(
+              fontSize = '22px'
+            )
+          ),
+          showInLegend = FALSE
+        ) %>%
+        hc_yAxis(
+          min=0,
+          max=100,
+          lineWidth = 0,
+          majorGridLineWidth = 0,
+          minorGridLineWidth = 0,
+          lineColor = 'transparent',
+          gridLineColor = 'transparent',
+          minorTickLength = 0,
+          tickLength = 0,
+          labels = list(
+            enabled = FALSE
+          )
+        ) %>% 
+        hc_xAxis(
+          min=0,
+          max=10,
+          lineWidth = 0,
+          majorGridLineWidth = 0,
+          minorGridLineWidth = 0,
+          lineColor = 'transparent',
+          gridLineColor = 'transparent',
+          minorTickLength = 0,
+          tickLength = 0,
+          labels = list(
+            enabled = FALSE
+          )
+        ) %>% 
+        hc_tooltip(
+          pointFormat = '<b>{point.name}</b><br>{point.z} Classmates (10 in Both)'
+        ) %>% 
+        hc_plotOptions(
+          bubble = list(
+            minSize = 100,
+            maxSize = 150
+          )
+        ) %>% 
+        hc_title(
+          text = "Overlap of Classmates' Stage in Life",
+          align = 'left'
+        ),
+      highchart() %>%
+        hc_add_series(
+          type = 'bubble',
+          name = "Totals (out of 137 Classmates)",
+          # color = hex_to_rgba(arcBlue,.5),
+          data = jsonlite::toJSON(female_venn_hc),
+          dataLabels = list(
+            enabled=TRUE,
+            style = list(
+              fontSize = '22px'
+            )
+          ),
+          showInLegend = FALSE
+        ) %>%
+        hc_yAxis(
+          min=0,
+          max=100,
+          lineWidth = 0,
+          majorGridLineWidth = 0,
+          minorGridLineWidth = 0,
+          lineColor = 'transparent',
+          gridLineColor = 'transparent',
+          minorTickLength = 0,
+          tickLength = 0,
+          labels = list(
+            enabled = FALSE
+          )
+        ) %>% 
+        hc_xAxis(
+          min=0,
+          max=10,
+          lineWidth = 0,
+          majorGridLineWidth = 0,
+          minorGridLineWidth = 0,
+          lineColor = 'transparent',
+          gridLineColor = 'transparent',
+          minorTickLength = 0,
+          tickLength = 0,
+          labels = list(
+            enabled = FALSE
+          )
+        ) %>% 
+        hc_tooltip(
+          pointFormat = '<b>{point.name}</b><br>{point.z} Classmates (19 in Both)'
+        ) %>% 
+        hc_plotOptions(
+          bubble = list(
+            minSize = 100,
+            maxSize = 150
+          )
+        ) %>% 
+        hc_title(
+          text = "Overlap of Classmates' Stage in Life",
+          align = 'left'
+        ),
+      ncol = 2
+    ),
+    nrow = 3,
+    height = '1200px'
+  )
+)
+
+```
+
+The differences between genders is small, but fun to view at least. 1 in 3 men are at least engaged right now. Which is hilariously accurate since 1 of my 3 friends in my aforementioned group chat is married. On the flip side, over 2 in 5 women are at least engaged. Similarly, 1 in 10 men are parents while almost 2 in 10 women are parents. It seems that the guys are taking just a bit longer to settle down in both areas; women are more likely to be engaged/married and are twice as likely to be to be parents. 
+
+Now it’s only been 5 years, so these stats could literally double by the time our first reunion hits. But it turns out I’m not alone after all, and for the next little bit unmarried and childless will describe the majority of my class. But we still haven’t answered the big question: how much am I drinking tonight?
+
+```{r waffle}
+
+waffle(
+  parts = sum(raw_hs$engaged,raw_hs$expecting),
+  rows = 6,
+  size = 1,
+  colors = arcGreen
+) +
+  theme(
+    legend.position = 'none'
+  ) +
+  annotate(
+    "text",x=12,y=3.5,
+    label=paste0(sum(raw_hs$engaged,raw_hs$expecting)," Total Drinks"),
+    fontface="bold",color=arcDark,size = 20,hjust='center',vjust='center'
+  )
+
+```
+
+For context (and assuming you wouldn’t die of alcohol poisoning) 142 drinks would be:
+
+*	Over a gallon of any spirit taken a shot at a time  
+*	Six 24 packs of your favorite lite beer  
+*	Almost 30 bottles of wine at 5 glasses per standard bottle  
+
+Since your body only processes 1 oz/hour of alcohol at a time, we’re talking <b>6 entire days</b> of your liver working overtime. A boozy death wish to be sure, so I’ll settle for having an extra drink or two when I can, and by the time I’m all caught up on these drinks, it’ll probably be time to redo the analysis.
+
+<font size='2'>Disclaimer: I in no way look down on anyone who decides to get married or have a kid this early in life. My parents did, I suppose. And while I don’t necessarily understand how you could figure out such an important and long-lasting part of your life before 23, I’m sure it’s a nice feeling knowing that you found someone to be with whether that be your spouse, significant other, child, or even pet for those that have them. For those of us that have none of those things? You’re more than welcome to have a drink with me!</font>
