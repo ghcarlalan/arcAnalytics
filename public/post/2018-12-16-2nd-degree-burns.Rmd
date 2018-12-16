@@ -1,0 +1,882 @@
+---
+title: 2nd Degree Burns
+author: Alan Carlson
+date: '2018-12-16'
+slug: 2nd-degree-burns
+categories:
+  - personal
+tags: []
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(knitr)
+library(ggplot2)
+library(lubridate)
+library(reshape2)
+library(leaflet)
+library(scales)
+library(manipulateWidget)
+library(highcharter)
+library(blogdown)
+library(htmltools)
+library(widgetframe)
+library(gridExtra)
+library(waffle)
+
+knitr::opts_chunk$set(
+  warning = FALSE,
+  echo = FALSE,
+  message = FALSE,
+  cache = FALSE,
+  tidy = TRUE,
+  out.width = '100%'
+)
+
+knit_hooks$set(htmlcap = function(before, options, envir) {
+  if(!before) {
+    paste('<p style="text-align:center "><i>',options$htmlcap,"</i></p>",sep="")
+    }
+  }
+)
+
+arcGreen <- '#9FC131'
+arcBlue <- '#1C8867'
+arcYellow <- '#F2D055'
+arcDark <- '#2A3A35'
+arcOrange <- '#EF431B'
+arcGrey <- '#CCCCCC'
+arcPink <- '#DC584E'
+
+#data load
+raw_degree <- read.csv(
+  "/arcAnalytics/content/post/datasets/degreeHighchart.csv",
+  stringsAsFactors = FALSE,
+  check.names = FALSE,
+  fileEncoding="UTF-8-BOM"
+) %>% 
+  mutate(
+    id = as.character(id),
+    parent = as.character(parent)
+  )
+
+```
+
+Since adding a Master’s degree diploma to my wall, I’ve moved on to a job that really doesn’t have anything to do with what I studied. Out of the team I’m currently a part of, almost everyone else has formal experience/knowledge/degrees in statistics, math, psychology, etc. As such, some people ask me what I studied (BBA Finance/Management & MS Finance) and what those degrees entailed. And while it’s only been a few months since I traded in my classes for meetings, I really can’t remember the overall picture – only specific projects or presentations. Which begs the question: what the Hell did I spend the last five years on?
+
+```{r,echo=FALSE,out.width='50%',htmlcap="It couldn't have <b>all</b> been spent wasting paper",fig.align='center'}
+knitr::include_graphics("/post/2018-12-16-2nd-degree-burns_files/exam.jpg")
+```
+
+Anyway, for both of our sakes, we’re going to walk through my college courses a semester at a time! But before that, it’ll probably help to know where I actually went to college:
+
+```{r map}
+
+mapData <- data.frame(
+  label = c("ISU Satellite","ISU Main Campus","Univerity of Utah"),
+  latitude = c(43.5171704,42.862727,40.7649408),
+  longitude = c(-112.0561017,-112.4319096,-111.8442961)
+)
+
+widgetframe::frameWidget(
+  leaflet(
+    options = leafletOptions(
+      zoomControl = FALSE,
+      dragging = FALSE,
+      minZoom = 7,
+      maxZoom = 7
+    )
+  ) %>%
+    addTiles() %>% 
+    addCircleMarkers(
+      lat = 43.5171704,lng = -112.0561017,
+      stroke = FALSE,
+      fillOpacity = .65,
+      color = "#FF671F",
+      label = "ISU Satellite",
+      labelOptions = labelOptions(
+        noHide = TRUE,
+        direction = "bottom",
+        offset = c(0,10),
+        style = list(
+          "color" = "#FF671F",
+          "font-style" = "bold",
+          "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+          "font-size" = "12px",
+          "border-color" = "rgba(0,0,0,0.5)"
+        )
+      )
+    ) %>% 
+    addCircleMarkers(
+      lat = 42.862727,lng = -112.4319096,
+      stroke = FALSE,
+      fillOpacity = .65,
+      color = "#FF671F",
+      label = "ISU Main Campus",
+      labelOptions = labelOptions(
+        noHide = TRUE,
+        direction = "bottom",
+        offset = c(0,10),
+        style = list(
+          "color" = "#FF671F",
+          "font-style" = "bold",
+          "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+          "font-size" = "12px",
+          "border-color" = "rgba(0,0,0,0.5)"
+        )
+      )
+    ) %>% 
+    addCircleMarkers(
+      lat = 40.7649408,lng = -111.8442961,
+      stroke = FALSE,
+      fillOpacity = .65,
+      color = "#CC0000",
+      label = "University of Utah",
+      labelOptions = labelOptions(
+        noHide = TRUE,
+        direction = "top",
+        offset = c(0,-10),
+        style = list(
+          "color" = "#CC0000",
+          "font-style" = "bold",
+          "box-shadow" = "3px 3px rgba(0,0,0,0.25)",
+          "font-size" = "12px",
+          "border-color" = "rgba(0,0,0,0.5)"
+        )
+      )
+    )
+)
+
+```
+
+In a world where cash is king, it wasn’t a difficult choice to go to Idaho State University when they handed me a full ride scholarship. And since I lived in Idaho Falls, I figured I’d spend a year taking classes close to home at their satellite campus (but more importantly, to score free meals from my parents). After that year, I did the rest of my undergrad an hour South in Pocatello at ISU’s main campus. With one diploma down, I immediately switched my orange outfits for red ones as I went the University of Utah to complete my Master’s degree.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="\"Sellout.\" ISU, probably",fig.align='center'}
+knitr::include_graphics("/post/2018-12-16-2nd-degree-burns_files/university.jpg")
+```
+
+Now that the road map has been laid out, let’s get to why you’re here today: fun visuals based on underwhelming information about me!
+
+```{r semOne}
+
+semOne <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semOne),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+Now I know it seems like I only took Gen Eds my first semester, but I can explain. I was going to be a Nuclear Engineer when I started college since that’s pretty much what my entire family does, until I realized that science was absolutely NOT my specialty. I got a 2.96 GPA that semester, which almost lost me my scholarship. It was a rough time in general; I was working graveyard shifts that kept me from friends, the people at the satellite campus I went to were much older (and uninterested in making friends), and I was stressed about not being good at what I was studying.
+
+That being said, I lucked out that Chemistry & Calculus counted as Gen Eds, so my efforts weren’t totally wasted when I switched to business.
+
+```{r semTwo}
+
+semTwo <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semTwo),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+My second semester I “technically” switched to business, a decision I made after thinking “huh, I relatively enjoy the work I do as a night auditor at this hotel. I’ll look into getting a degree in numbers.” I say technically because I only took one class that wasn’t a Gen Ed again, which was Business Statistics. BUT, true believer, that class showed me what it meant to enjoy your work so much that it’s not work: I spent 9 continuous hours doing a final project analyzing the statistical differences between housing prices in two nearby cities and it was actually fun! I remember those hours flying by, and thinking that I might have found my passion/calling/purpose/etc.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="The Caller ID said \"Life\"",fig.align='center'}
+knitr::include_graphics("/post/2018-12-16-2nd-degree-burns_files/phone.jpg")
+```
+
+```{r semThree}
+
+semThree <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2','sem 3')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semThree),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+My third semester I finally could enroll in actual business courses. I learned my overall love/hate relationship with accounting, got a little bit of law experience, general business knowledge, and advanced business stats. I hadn’t quite figured I wanted to do finance yet, but I was slowly getting there.
+
+```{r semFour}
+
+semFour <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2','sem 3','sem 4')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semFour),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+Semester four is where I started to really take off. I was finding my niche of developing visuals and projects for class that would impress students and professors alike. That pink sliver you see? I did a project in that class that would make me a guest lecturer on the subject of visualization in MS Excel for the next 2 years.
+
+```{r semFive}
+
+semFive <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2','sem 3','sem 4','sem 5')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semFive),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+It’s here I take my first finance class and I fall in love. It made so much intuitive sense and offered itself to so many opportunities to make beautiful analysis, imagery, and recommendations. But, I knew that Finance majors were a dime a dozen, so I picked up a double major in Management to set myself apart, round off my skillset, and understand how to interact with an organization’s people as well as its numbers, which I also thoroughly enjoyed.
+
+```{r semSix}
+
+semSix <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2','sem 3','sem 4','sem 5','sem 6')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semSix),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+I doubled down on Finance in semester six and quickly emerged as one of more passionate students around the subject. I joined the business college’s Finance Club and secured an officer position on it. This led to participating in an intercollegiate competition where I got to explore all of the topics I had been learning but in a real world scenario.
+
+```{r semSeven}
+
+semSeven <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2','sem 3','sem 4','sem 5','sem 6','sem 7')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semSeven),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+This one was probably my favorite semester. I was co-president of the Finance Club, which led to organizing several fun events and coordinating a volunteer weekend. My classes were a blast because Real Estate Finance was a perfect class to show off my presentation skills, group projects were so much fun because I had enough social capital that people wanted me on their group more often than they didn’t, and in general I just felt like I was a respected/valued member of the college of business.
+
+```{r semEight}
+
+semEight <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2','sem 3','sem 4','sem 5','sem 6','sem 7','sem 8')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semEight),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+In contrast, my last semester was tying up loose ends to graduate, which explains the delayed accounting courses and my last remaining Gen Ed. Data Visualization was fun enough, and set up a bit of what I do now professionally. Policy & Management was ISU’s capstone course that goes into analyzing/implementing business theory in the real world, and *that* was a great class.
+
+And that wraps up my Bachelor’s degree. You’ll notice there’s actually not a ton of finance classes, which is why I wanted to get my Master’s in the first place. Nonetheless, I absolutely enjoyed my time at ISU, and was honored beyond belief when I was named the **[“Outstanding Student in Finance”]**(https://www.youtube.com/watch?v=Fzgll650eVo&t=18s) in my graduating class.
+
+```{r semNine}
+
+semNine <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2','sem 3','sem 4','sem 5','sem 6','sem 7','sem 8','sem 9')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semNine),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+And now we transfer to The U, where everything I had built up back at ISU *did not matter in the fucking slightest.* Not only was I in the minority of students coming straight from an undergrad degree, other students had been at The U long enough to already establish relationships with professors and faculty. It took four years to get to the top in my undergrad, and there was no way I was even getting close to that in only one year this time around.
+
+Regardless, I developed an interest in information system courses since I had pretty much peaked with MS Office. I had exhausted Excel and PowerPoint’s capabilities, and I ran circles around any other presentation/visualization that I came across.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="\"I wouldn't wipe my ass with your slide deck.\" -Me, always",fig.align='center'}
+knitr::include_graphics("/post/2018-12-16-2nd-degree-burns_files/me.jpg")
+```
+
+These classes introduced me to R, and upped my resume’s value, without which I wouldn’t be sharing this with you now.
+
+```{r semTen}
+
+semTen <- raw_degree %>% 
+  filter(
+    filter %in% c('all','sem 1','sem 2','sem 3','sem 4','sem 5','sem 6','sem 7','sem 8','sem 9','sem 10')
+  )
+
+widgetframe::frameWidget(
+  highchart() %>%
+    hc_title(
+      text = "Education Breakdown"
+    ) %>% 
+    hc_add_series(
+      type = "sunburst",
+      data = jsonlite::toJSON(semTen),
+      allowDrillToNode = FALSE,
+      cursor = 'pointer',
+      dataLabels = list(
+        format = '{point.name}',
+        filter = list(
+          property = 'innerArcLength',
+          operator = '>',
+          value = 16
+        )
+      )
+      ,levels = list(
+        list(
+          level = 1,
+          color = 'color',
+          levelIsConstant = TRUE,
+          dataLabels = list(
+            filter = list(
+              property = 'outerArcLength',
+              operator = '>',
+              value = 64
+            )
+          )
+        ),
+        list(
+          level = 2,
+          color = 'color'
+        ),
+        list(
+          level = 3,
+          color = 'color'
+        ),
+        list(
+          level = 4,
+          color = 'color'
+        ),
+        list(
+          level = 5,
+          color = 'color'
+        )
+      )
+    ) %>% 
+    hc_tooltip(
+      headerFormat = '',
+      pointFormat = '{point.label} was <b>{point.value}</b> credits'
+    )
+)
+
+```
+
+My final semester of college I swapped the data classes for real estate classes for a few reasons: the data classes were full, I liked real estate as a subject I suppose, I was part of an extracurricular real estate competition, etc. Those were fine enough, but unfortunately this would be the semester that almost killed me.
+
+I failed an exam for the first time in my life. Not the whole “oh I got a B- what a failure” but an actual 50%. On an exam worth a large part of my grade. I was the lowest in the class. A finance class. I studied, paid attention, and otherwise was prepared. And while I didn’t feel great after the test, I never would have thought I would do that bad. It got to me so much that I started to underperform in other classes. The whole thing really shook my self-confidence. Strike that; it destroyed my self-confidence. What if this entire time I wasn’t actually good at finance, and I just had an easy time? Did I really earned my degrees? What hope do I have of doing well in the real world? How can I say I’m good at this subject if I’m barely passing these classes?
+
+Needless to say, this spawned an existential crisis that would echo and ruin pretty much every aspect of my life, and I’m still dealing with the fallout on any given day.
+
+```{r,echo=FALSE,out.width='50%',htmlcap="Pictured: me the semester before and the Summer after graduating with my Master's",fig.align='center'}
+knitr::include_graphics("/post/2018-12-16-2nd-degree-burns_files/fallout.jpg")
+```
+
+But that about sums it up. If you look at the overall picture of my university acquired knowledge, you can see what my degrees amounted to:
+
+```{r breakdown,fig.width=1,fig.height=2,out.width='25%',fig.align='center'}
+
+breakdown <- raw_degree %>% 
+  group_by(
+    category
+  ) %>% 
+  summarise(
+    credits = sum(value,na.rm = TRUE)
+  ) %>% 
+  mutate(
+    credits = ifelse(category == "Gen Ed",33,credits),
+    pct = credits/sum(credits)
+  ) %>% 
+  filter(
+    category != ''
+  )
+
+ggplot(breakdown,aes("Subject",pct,fill=category)) +
+  geom_col(color="white",size=.25) +
+  geom_text(
+    aes(label = paste0(category," (",percent(pct),")")),
+    position = position_stack(vjust = .5),fontface="bold",size=1.75
+  ) +
+  scale_fill_manual(values = c("#F2D055","#EF431B","#9FC131","#CCCCCC","#DC5842","#1C8867")) +
+  theme_void() +
+  theme(
+    legend.position = "none"
+  )
+
+```
+
+Ironically, without my Master’s degree, my finance classes would be underrepresented compared to my other business ones. But at least now I can prove a majority of my knowledge is finance based, which will certainly help me in the future as I deal with the responsibility of being an adult.

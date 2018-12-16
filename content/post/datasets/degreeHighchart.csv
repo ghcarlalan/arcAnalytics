@@ -1,0 +1,130 @@
+﻿id,parent,label,name,value,color,filter,category
+0,,My Education,My Education,,#FFFFFF,all,
+1.01,0,Idaho State University,ISU,,#FF671F,all,
+1.02,0,University of Utah,U of U,,#CC0000,all,
+2.01,1.01,Semester 1,Sem 1,,#FF671F,sem 1,
+2.02,1.01,Semester 2,Sem 2,,#FF671F,sem 2,
+2.03,1.01,Semester 3,Sem 3,,#FF671F,sem 3,
+2.04,1.01,Semester 4,Sem 4,,#FF671F,sem 4,
+2.05,1.01,Semester 5,Sem 5,,#FF671F,sem 5,
+2.06,1.01,Semester 6,Sem 6,,#FF671F,sem 6,
+2.07,1.01,Semester 7,Sem 7,,#FF671F,sem 7,
+2.08,1.01,Semester 8,Sem 8,,#FF671F,sem 8,
+2.09,1.02,Semester 9,Sem 9,,#CC0000,sem 9,
+2.1,1.02,Semester 10,Sem 10,,#CC0000,sem 10,
+3.01,2.01,Gen Ed,GE,,#CCCCCC,sem 1,
+3.02,2.01,Management,MGT,,#1C8867,sem 1,
+3.03,2.01,Accounting,ACCT,,#F2D055,sem 1,
+3.04,2.01,Business,BUS,,#EF431B,sem 1,
+3.05,2.01,Info Systems,INFO,,#DC5842,sem 1,
+3.06,2.01,Finance,FIN,,#9FC131,sem 1,
+3.07,2.02,Gen Ed,GE,,#CCCCCC,sem 2,
+3.08,2.02,Management,MGT,,#1C8867,sem 2,
+3.09,2.02,Accounting,ACCT,,#F2D055,sem 2,
+3.1,2.02,Business,BUS,,#EF431B,sem 2,
+3.11,2.02,Info Systems,INFO,,#DC5842,sem 2,
+3.12,2.02,Finance,FIN,,#9FC131,sem 2,
+3.13,2.03,Gen Ed,GE,,#CCCCCC,sem 3,
+3.14,2.03,Management,MGT,,#1C8867,sem 3,
+3.15,2.03,Accounting,ACCT,,#F2D055,sem 3,
+3.16,2.03,Business,BUS,,#EF431B,sem 3,
+3.17,2.03,Info Systems,INFO,,#DC5842,sem 3,
+3.18,2.03,Finance,FIN,,#9FC131,sem 3,
+3.19,2.04,Gen Ed,GE,,#CCCCCC,sem 4,
+3.2,2.04,Management,MGT,,#1C8867,sem 4,
+3.21,2.04,Accounting,ACCT,,#F2D055,sem 4,
+3.22,2.04,Business,BUS,,#EF431B,sem 4,
+3.23,2.04,Info Systems,INFO,,#DC5842,sem 4,
+3.24,2.04,Finance,FIN,,#9FC131,sem 4,
+3.25,2.05,Gen Ed,GE,,#CCCCCC,sem 5,
+3.26,2.05,Management,MGT,,#1C8867,sem 5,
+3.27,2.05,Accounting,ACCT,,#F2D055,sem 5,
+3.28,2.05,Business,BUS,,#EF431B,sem 5,
+3.29,2.05,Info Systems,INFO,,#DC5842,sem 5,
+3.3,2.05,Finance,FIN,,#9FC131,sem 5,
+3.31,2.06,Gen Ed,GE,,#CCCCCC,sem 6,
+3.32,2.06,Management,MGT,,#1C8867,sem 6,
+3.33,2.06,Accounting,ACCT,,#F2D055,sem 6,
+3.34,2.06,Business,BUS,,#EF431B,sem 6,
+3.35,2.06,Info Systems,INFO,,#DC5842,sem 6,
+3.36,2.06,Finance,FIN,,#9FC131,sem 6,
+3.37,2.07,Gen Ed,GE,,#CCCCCC,sem 7,
+3.38,2.07,Management,MGT,,#1C8867,sem 7,
+3.39,2.07,Accounting,ACCT,,#F2D055,sem 7,
+3.4,2.07,Business,BUS,,#EF431B,sem 7,
+3.41,2.07,Info Systems,INFO,,#DC5842,sem 7,
+3.42,2.07,Finance,FIN,,#9FC131,sem 7,
+3.43,2.08,Gen Ed,GE,,#CCCCCC,sem 8,
+3.44,2.08,Management,MGT,,#1C8867,sem 8,
+3.45,2.08,Accounting,ACCT,,#F2D055,sem 8,
+3.46,2.08,Business,BUS,,#EF431B,sem 8,
+3.47,2.08,Info Systems,INFO,,#DC5842,sem 8,
+3.48,2.08,Finance,FIN,,#9FC131,sem 8,
+3.49,2.09,Gen Ed,GE,,#CCCCCC,sem 9,
+3.5,2.09,Management,MGT,,#1C8867,sem 9,
+3.51,2.09,Accounting,ACCT,,#F2D055,sem 9,
+3.52,2.09,Business,BUS,,#EF431B,sem 9,
+3.53,2.09,Info Systems,INFO,,#DC5842,sem 9,
+3.54,2.09,Finance,FIN,,#9FC131,sem 9,
+3.55,2.1,Gen Ed,GE,,#CCCCCC,sem 10,
+3.56,2.1,Management,MGT,,#1C8867,sem 10,
+3.57,2.1,Accounting,ACCT,,#F2D055,sem 10,
+3.58,2.1,Business,BUS,,#EF431B,sem 10,
+3.59,2.1,Info Systems,INFO,,#DC5842,sem 10,
+3.6,2.1,Finance,FIN,,#9FC131,sem 10,
+4.01,3.01,Engineering Graphics,Engineering Graphics,2,#CCCCCC,sem 1,Gen Ed
+4.02,3.01,General Chemistry I,General Chemistry I,4,#CCCCCC,sem 1,Gen Ed
+4.03,3.01,General Chemistry I Lab,General Chemistry I Lab,1,#CCCCCC,sem 1,Gen Ed
+4.04,3.01,Calculus I,Calculus I,4,#CCCCCC,sem 1,Gen Ed
+4.05,3.01,Intro to Nuclear Eng,Intro to Nuclear Eng,1,#CCCCCC,sem 1,Gen Ed
+4.06,3.01,Intro to Philosophy,Intro to Philosophy,3,#CCCCCC,sem 1,Gen Ed
+4.07,3.07,US History and Culture,US History and Culture,3,#CCCCCC,sem 2,Gen Ed
+4.08,3.08,Business Statistics,Business Statistics,3,#1C8867,sem 2,Management
+4.09,3.07,American Music,American Music,3,#CCCCCC,sem 2,Gen Ed
+4.1,3.07,Intro to American Govt,Intro to American Govt,3,#CCCCCC,sem 2,Gen Ed
+4.11,3.07,"Comp, Reading, Writing","Comp, Reading, Writing",6,#CCCCCC,sem 2,Gen Ed
+4.12,3.15,Principles of Accounting I,Principles of Accounting I,3,#F2D055,sem 3,Accounting
+4.13,3.16,The World of Business,The World of Business,3,#EF431B,sem 3,Business
+4.14,3.16,Principles of Microeconomics,Principles of Microeconomics,3,#EF431B,sem 3,Business
+4.15,3.14,Adv Business Statistics,Adv Business Statistics,3,#1C8867,sem 3,Management
+4.16,3.14,Legal Environment of Orgs,Legal Environment of Orgs,3,#1C8867,sem 3,Management
+4.17,3.16,Professional Development I,Professional Development I,1,#EF431B,sem 3,Business
+4.18,3.21,Principles of Accounting II,Principles of Accounting II,3,#F2D055,sem 4,Accounting
+4.19,3.19,Principles of Speech,Principles of Speech,3,#CCCCCC,sem 4,Gen Ed
+4.2,3.22,Principles of Macroeconomics,Principles of Macroeconomics,3,#EF431B,sem 4,Business
+4.21,3.23,Intro to Informatics/Analytics,Intro to Informatics/Analytics,3,#DC5842,sem 4,Info Systems
+4.22,3.22,Basic Marketing Management,Basic Marketing Management,3,#EF431B,sem 4,Business
+4.23,3.30,Corporate Financial Management,Corporate Financial Management,3,#9FC131,sem 5,Finance
+4.24,3.28,Business Writing,Business Writing,3,#EF431B,sem 5,Business
+4.25,3.28,Business/Professional Speaking,Business/Professional Speaking,3,#EF431B,sem 5,Business
+4.26,3.26,Individual and Org Behavior,Individual and Org Behavior,3,#1C8867,sem 5,Management
+4.27,3.26,Operations/Production Mangement,Operations/Production Mangement,3,#1C8867,sem 5,Management
+4.28,3.28,Professional Development II,Professional Development II,1,#EF431B,sem 5,Business
+4.29,3.31,World Regional Geography,World Regional Geography,3,#CCCCCC,sem 6,Gen Ed
+4.3,3.32,Organization Behavior,Organization Behavior,3,#1C8867,sem 6,Management
+4.31,3.36,Adv Corp Financial Mgt,Adv Corp Financial Mgt,3,#9FC131,sem 6,Finance
+4.32,3.36,Investments,Investments,3,#9FC131,sem 6,Finance
+4.33,3.32,Productivity and Quality,Productivity and Quality,3,#1C8867,sem 6,Management
+4.34,3.36,CFA Challenge,CFA Challenge,2,#9FC131,sem 6,Finance
+4.35,3.38,Project Management,Project Management,3,#1C8867,sem 7,Management
+4.36,3.38,Human Resource Management,Human Resource Management,3,#1C8867,sem 7,Management
+4.37,3.38,Labor and Employment Law,Labor and Employment Law,3,#1C8867,sem 7,Management
+4.38,3.42,Real Estate Finance,Real Estate Finance,3,#9FC131,sem 7,Finance
+4.39,3.42,Student Managed Investment Fund I,Student Managed Investment Fund I,3,#9FC131,sem 7,Finance
+4.4,3.45,Management and Cost Accounting,Management and Cost Accounting,3,#F2D055,sem 8,Accounting
+4.41,3.45,Accounting Information Systems,Accounting Information Systems,3,#F2D055,sem 8,Accounting
+4.42,3.44,Policy and Management,Policy and Management,3,#1C8867,sem 8,Management
+4.43,3.46,Professional Development III,Professional Development III,1,#EF431B,sem 8,Business
+4.44,3.43,Intro to Geology,Intro to Geology,3,#CCCCCC,sem 8,Gen Ed
+4.45,3.47,Data Visualization,Data Visualization,3,#DC5842,sem 8,Info Systems
+4.46,3.51,Financial Statements,Financial Statements,3,#F2D055,sem 9,Accounting
+4.47,3.54,Stats for Finance,Stats for Finance,3,#9FC131,sem 9,Finance
+4.48,3.54,Adv Corp Finance,Adv Corp Finance,3,#9FC131,sem 9,Finance
+4.49,3.53,Data Visualization with R,Data Visualization with R,1.5,#DC5842,sem 9,Info Systems
+4.5,3.53,Database Theory & Design,Database Theory & Design,3,#DC5842,sem 9,Info Systems
+4.51,3.53,Data Mining,Data Mining,3,#DC5842,sem 9,Info Systems
+4.52,3.60,Investments/Portfolio Mgt,Investments/Portfolio Mgt,3,#9FC131,sem 10,Finance
+4.53,3.60,Financial Cases,Financial Cases,3,#9FC131,sem 10,Finance
+4.54,3.60,Financial Modeling,Financial Modeling,3,#9FC131,sem 10,Finance
+4.55,3.60,Real Estate Finance,Real Estate Finance,3,#9FC131,sem 10,Finance
+4.56,3.60,Real Estate Construction,Real Estate Construction,1.5,#9FC131,sem 10,Finance
